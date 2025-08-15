@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlbc.CyUpErp.mapper.MdmNoMapper">
+
+	<select id="findCode" parameterType="java.util.Map" resultType="com.zlbc.CyUpErp.entity.MdmNo">
+		SELECT * from mdm_no where code = #{code};
+	</select>
+
+	<update id="updateCode" parameterType="com.zlbc.CyUpErp.entity.MdmNo">
+		update mdm_no set value = #{value} where code = #{code}
+	</update>
+	
+	<insert id="insertCode" parameterType="com.zlbc.CyUpErp.entity.MdmNo">
+		insert into mdm_no(code, name, qz, value) values (#{code}, #{name}, #{qz}, #{value})
+	</insert>
+</mapper>

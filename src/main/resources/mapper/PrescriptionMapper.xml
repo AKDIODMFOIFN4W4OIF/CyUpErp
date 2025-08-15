@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zlbc.CyUpErp.mapper.PrescriptionMapper">
+
+    <!-- 更新 UpErpStatus 状态 -->
+    <update id="updateUpErpStatus">
+        UPDATE psp_normal_prescription
+        SET UpErpStatus = #{UpErpStatus}
+        WHERE FlowNo = #{flowNo}
+    </update>
+
+    <update id="batchUpdateFlowNo">
+        UPDATE psp_normal_prescription
+        SET flowNo = #{flowNo}
+        WHERE pspCode IN
+        <foreach collection="pspCodes" item="pspCode" open="(" separator="," close=")">
+            #{pspCode}
+        </foreach>
+        and UpErpStatus=0
+    </update>
+
+    <select id="selectPrescriptionDetailBatch"
+            resultType="com.zlbc.CyUpErp.entity.PrescriptionDetailDTO">
+        SELECT
+        c.drugCode,
+        c.drugName,
+        b.DrugUnit AS drugSpecification,
+        c.drugPlace,
+        c.DrugFactory,
+        a.PspNum * b.DrugDose AS drugConsumption,
+        DATE_FORMAT(b.CreatedOn, '%Y%m%d') AS drugConsumptionDate,
+        a.ClientCode AS hospitalCode,
+        a.pspcode,
+        a.PspType,
+        d.pspDrugAmount,
+        a.Patient AS patientName,
+        CASE
+        WHEN a.Status = 11 THEN 1
+        WHEN a.Status = 1 THEN 0
+        END AS ConsumptionFlg
+        FROM psp_normal_prescription a
+        JOIN psp_agreement_prescription_drug b ON a.id = b.pid
+        JOIN mdm_drug_info c ON c.id = b.drugid
+        JOIN (
+        SELECT pid, COUNT(*) AS pspDrugAmount
+        FROM psp_agreement_prescription_drug
+        GROUP BY pid
+        ) d ON d.pid = a.id
+        WHERE a.id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        GROUP BY a.FlowNo, c.drugCode, c.drugName, b.DrugUnit, c.drugPlace, c.DrugFactory,
+        a.PspNum, b.DrugDose, b.CreatedOn, a.ClientCode, a.pspcode, a.PspType,
+        d.pspDrugAmount, a.Patient, a.Status;
+    </select>
+
+    <select id="selectPrescriptionDetailByFlowNo" resultType="com.zlbc.CyUpErp.entity.PrescriptionDetailDTO">
+        SELECT c.DrugCode                         AS "DrugCode", -- 使用双引号确保大小写
+               c.DrugName                         AS "DrugName",
+               b.DrugUnit                         AS "DrugSpecification",
+               c.drugPlace                        AS "DrugPlace",
+               c.DrugFactory                      AS "DrugFactory",
+               a.PspNum * b.DrugDose              AS "DrugConsumption",
+               DATE_FORMAT(b.CreatedOn, '%Y%m%d') AS "DrugConsumptionDate",
+               a.ClientCode                       AS "HospitalCode",
+               a.Pspcode                          AS "PspCode",
+               a.PspType                          AS "PspType",
+               d.PspDrugAmount                    AS "PspDrugAmount",
+               a.Patient                          AS "PatientName",
+               CASE
+                   WHEN a.Status = 11 THEN 1
+                   WHEN a.Status = 1 THEN 0
+                   END                            AS "ConsumptionFlg"
+        FROM psp_normal_prescription a
+                 JOIN psp_agreement_prescription_drug b ON a.id = b.pid
+                 JOIN mdm_drug_info c ON c.id = b.drugid
+                 JOIN (SELECT pid, COUNT(*) AS PspDrugAmount
+                       FROM psp_agreement_prescription_drug
+                       GROUP BY pid) d ON d.pid = a.id
+        WHERE a.flowNo=#{flowNo}
+        GROUP BY c.drugCode, c.drugName, b.DrugUnit, c.drugPlace, c.DrugFactory,
+                 a.PspNum, b.DrugDose, b.CreatedOn, a.ClientCode, a.pspcode, a.PspType,
+                 d.PspDrugAmount, a.Patient, a.Status;
+    </select>
+
+    <select id="selectTop10PendingPrescriptionPspCodes" resultType="java.lang.String">
+        SELECT pspCode
+        FROM psp_normal_prescription
+        WHERE ClientCode = #{clientCode}
+          AND UpErpStatus = 0
+          AND CreatedOn >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+          AND CreatedOn &lt; CURDATE()
+        ORDER BY CreatedOn ASC
+            LIMIT 100;
+    </select>
+
+    <select id="selectFlowNoByPspCodes" resultType="java.lang.String" parameterType="java.util.List">
+        SELECT flowNo
+        FROM psp_normal_prescription
+        WHERE pspcode IN
+        <foreach item="code" index="index" collection="pspCodes" open="(" separator="," close=")">
+            #{code}
+        </foreach>
+        AND flowNo IS NOT NULL
+        LIMIT 1
+    </select>
+</mapper>
