@@ -5,29 +5,29 @@ import lombok.Data;
 @Data
 public class PrescriptionDetailDTO {
     @JsonProperty("PspCode")
-    private String PspCode;
+    private String pspCode;
     @JsonProperty("PspType")
-    private String PspType;
+    private String pspType;
     @JsonProperty("DrugCode")
-    private String DrugCode;
+    private String drugCode;
     @JsonProperty("DrugName")
-    private String DrugName;
+    private String drugName;
     @JsonProperty("PatientName")
-    private String PatientName;
+    private String patientName;
     @JsonProperty("DrugPlace")
-    private String DrugPlace;
+    private String drugPlace;
     @JsonProperty("DrugConsumptionDate")
-    private String DrugConsumptionDate;
+    private String drugConsumptionDate;
     @JsonProperty("DrugSpecification")
-    private String DrugSpecification;
+    private String drugSpecification;
     @JsonProperty("HospitalCode")
-    private String HospitalCode;
+    private String hospitalCode;
     @JsonProperty("ConsumptionFlg")
-    private int ConsumptionFlg;
+    private int consumptionFlg;
     @JsonProperty("PspDrugAmount")
-    private String PspDrugAmount;
+    private String pspDrugAmount;
     @JsonProperty("DrugConsumption")
-    private String DrugConsumption;
+    private String drugConsumption;
     @JsonProperty("DrugFactory")
-    private String DrugFactory;
+    private String drugFactory;
 }

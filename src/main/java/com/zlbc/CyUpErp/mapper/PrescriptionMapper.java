@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -17,7 +18,12 @@ public interface PrescriptionMapper {
 
     List<PrescriptionDetailDTO> selectPrescriptionDetailByFlowNo(@Param("flowNo") String flowNo);
 
-    List<String> selectTop10PendingPrescriptionPspCodes(@Param("clientCode") String clientCode);
+    List<String> selectTop100PendingPrescriptionPspCodes();
 
     String selectFlowNoByPspCodes(@Param("pspCodes") List<String> pspCodeList);
+
+    int updateInvalidIn48Hours(@Param("startTime") String startTime,
+                               @Param("endTime") String endTime);
+
+    void updateUpErpStatusConfirm(String flowNo);
 }

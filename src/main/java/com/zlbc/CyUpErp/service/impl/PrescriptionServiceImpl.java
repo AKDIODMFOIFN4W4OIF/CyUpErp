@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         // 3. 业务处理
         try {
             if ("1".equals(result)) {
-                prescriptionMapper.updateUpErpStatus(flowNo, 2);
+                prescriptionMapper.updateUpErpStatusConfirm(flowNo);
                 log.info("◈ 状态更新成功 | flowNo={}, oldStatus=1, newStatus=2", flowNo);
 
                 response.put("flowNo", flowNo);
@@ -62,5 +63,10 @@ public class PrescriptionServiceImpl implements PrescriptionService {
             log.error("◈ 处理异常 | flowNo={}, error={}", flowNo, e.getMessage(), e);
             throw e;
         }
+    }
+
+    @Override
+    public int updateInvalidIn48Hours(String startTime, String endTime) {
+        return prescriptionMapper.updateInvalidIn48Hours(startTime,endTime);
     }
 }

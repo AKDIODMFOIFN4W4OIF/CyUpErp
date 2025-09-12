@@ -25,10 +25,7 @@ public class ApiController {
     /*英克调用该接口获取处方明细*/
     @PostMapping("/mdc/mbs/cy/consumption/dataGet")
     public ResponseEntity<Map<String, Object>> getPendingPrescriptions() {
-        String clientCode = "949401";
-//        return pushService.getPendingPrescriptions(clientCode);
-        Map<String, Object> result = pushService.getPendingPrescriptions(clientCode);
-
+        Map<String, Object> result = pushService.getPendingPrescriptions();
         if (result == null) {
             Map<String, Object> noData = new LinkedHashMap<>();
             noData.put("flowNo", "");

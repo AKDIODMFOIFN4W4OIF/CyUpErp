@@ -24,9 +24,10 @@
             <version>2.13.0</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.13.0</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -54,7 +55,7 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.15</version>  <!-- 确保版本正确 -->
+            <version>1.15</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -150,8 +151,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.zlbc.searchroute.SearchrouteApplication</mainClass>
-                    <skip>true</skip>
+                    <mainClass>com.zlbc.CyUpErp.CyUpErpApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -164,5 +164,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
