@@ -12,7 +12,7 @@
 
     <appender name="baseLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>CyUpErp${LOG_HOME}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/CyUpErp/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>60</maxHistory>
             <totalSizeCap>60GB</totalSizeCap>

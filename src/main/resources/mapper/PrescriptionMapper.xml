@@ -88,7 +88,7 @@
         SELECT pspCode, clientCode
         FROM psp_normal_prescription
         WHERE UpErpStatus = 0
-          AND DATE (CreatedOn) >='2025-09-12'
+          AND DATE (CreatedOn) >='2025-09-15'
         ORDER BY CreatedOn ASC
             LIMIT 100
     </select>

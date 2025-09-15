@@ -15,7 +15,7 @@ public class PrescriptionScheduledTask {
     @Resource
     private PrescriptionService prescriptionService;
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 */2 * * ?")
     public void processInvalidPrescriptions() {
         log.info("开始处理48小时内的作废处方");
         LocalDateTime endTime = LocalDateTime.now();
