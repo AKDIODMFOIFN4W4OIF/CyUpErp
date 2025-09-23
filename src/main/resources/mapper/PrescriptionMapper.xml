@@ -39,7 +39,7 @@
 
     <select id="selectPrescriptionDetailByFlowNo" resultType="com.zlbc.CyUpErp.entity.PrescriptionDetailDTO">
         SELECT
-            c.DrugCode AS "DrugCode",
+            COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP') AS "DrugCode",
             b.ClientDrugName AS "DrugName",
             b.DrugUnit AS "DrugSpecification",
             c.drugPlace AS "DrugPlace",
@@ -66,7 +66,7 @@
                 LEFT JOIN mdm_drug_info c ON c.id = b.drugid -- 改为 LEFT JOIN，确保即使没有匹配的 c 记录也能返回 b 的数据
                 JOIN ( SELECT pid, COUNT(*) AS PspDrugAmount FROM psp_agreement_prescription_drug GROUP BY pid ) d ON d.pid = a.id
         WHERE
-            a.flowNo = #{flowNo}
+            a.flowNo = #{flowNo} AND a.UpErpStatus=0
         GROUP BY
             c.DrugCode,
             b.ClientDrugName,
@@ -88,7 +88,7 @@
         SELECT pspCode, clientCode
         FROM psp_normal_prescription
         WHERE UpErpStatus = 0
-          AND DATE (CreatedOn) >='2025-09-15'
+          AND DATE (CreatedOn) >='2025-09-16'
         ORDER BY CreatedOn ASC
             LIMIT 100
     </select>
