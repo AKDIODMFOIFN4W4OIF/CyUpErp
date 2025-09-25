@@ -19,7 +19,7 @@
         and UpErpStatus=0
     </update>
 
-    <update id="updateInvalidIn48Hours">
+    <update id="updateInvalidIn168Hours">
         UPDATE psp_normal_prescription
         SET UpErpStatus = 0
         WHERE status = 11

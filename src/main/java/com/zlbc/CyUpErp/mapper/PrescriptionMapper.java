@@ -22,7 +22,7 @@ public interface PrescriptionMapper {
 
     String selectFlowNoByPspCodes(@Param("pspCodes") List<String> pspCodeList);
 
-    int updateInvalidIn48Hours(@Param("startTime") String startTime,
+    int updateInvalidIn168Hours(@Param("startTime") String startTime,
                                @Param("endTime") String endTime);
 
     void updateUpErpStatusConfirm(String flowNo);

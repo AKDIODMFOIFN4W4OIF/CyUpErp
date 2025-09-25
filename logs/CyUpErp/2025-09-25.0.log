@@ -1,0 +1,31 @@
+14:32:52.042 [main] INFO  c.z.C.CyUpErpApplication - [logStarting,55] - Starting CyUpErpApplication using Java 1.8.0_421 on WIN-T4D3K4UGQU5 with PID 16792 (D:\gitcode\CyUpErp\target\classes started by Administrator in D:\gitcode\CyUpErp)
+14:32:52.044 [main] INFO  c.z.C.CyUpErpApplication - [logStartupProfileInfo,645] - No active profile set, falling back to 1 default profile: "default"
+14:32:53.391 [main] INFO  c.z.C.CyUpErpApplication - [logStarted,61] - Started CyUpErpApplication in 1.606 seconds (JVM running for 2.057)
+14:46:30.154 [main] INFO  c.z.C.CyUpErpApplication - [logStarting,55] - Starting CyUpErpApplication using Java 1.8.0_421 on WIN-T4D3K4UGQU5 with PID 10348 (D:\gitcode\CyUpErp\target\classes started by Administrator in D:\gitcode\CyUpErp)
+14:46:30.156 [main] INFO  c.z.C.CyUpErpApplication - [logStartupProfileInfo,645] - No active profile set, falling back to 1 default profile: "default"
+14:46:31.264 [main] INFO  c.z.C.CyUpErpApplication - [logStarted,61] - Started CyUpErpApplication in 1.335 seconds (JVM running for 1.909)
+14:47:46.522 [main] INFO  c.z.C.CyUpErpApplication - [logStarting,55] - Starting CyUpErpApplication using Java 1.8.0_421 on WIN-T4D3K4UGQU5 with PID 16112 (D:\gitcode\CyUpErp\target\classes started by Administrator in D:\gitcode\CyUpErp)
+14:47:46.523 [main] INFO  c.z.C.CyUpErpApplication - [logStartupProfileInfo,645] - No active profile set, falling back to 1 default profile: "default"
+14:47:47.636 [main] INFO  c.z.C.CyUpErpApplication - [logStarted,61] - Started CyUpErpApplication in 1.341 seconds (JVM running for 1.752)
+15:41:14.387 [main] INFO  c.z.C.CyUpErpApplication - [logStarting,55] - Starting CyUpErpApplication using Java 1.8.0_421 on WIN-T4D3K4UGQU5 with PID 17256 (D:\gitcode\CyUpErp\target\classes started by Administrator in D:\gitcode\CyUpErp)
+15:41:14.389 [main] INFO  c.z.C.CyUpErpApplication - [logStartupProfileInfo,645] - No active profile set, falling back to 1 default profile: "default"
+15:41:15.496 [main] INFO  c.z.C.CyUpErpApplication - [logStarted,61] - Started CyUpErpApplication in 1.334 seconds (JVM running for 1.724)
+15:50:00.003 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,20] - 开始处理168小时内的作废处方
+15:50:00.003 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,23] - 时间范围：2025-09-18T15:50:00.003 至 2025-09-25T15:50:00.003
+15:50:00.351 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,28] - 处理完成，共更新0条作废处方
+16:00:00.008 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,20] - 开始处理168小时内的作废处方
+16:00:00.008 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,23] - 时间范围：2025-09-18T16:00:00.008 至 2025-09-25T16:00:00.008
+16:00:00.017 [scheduling-1] WARN  c.a.d.p.DruidAbstractDataSource - [testConnectionInternal,1494] - discard long time none received connection. , jdbcUrl : jdbc:mysql://192.168.6.232/mes_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai, version : 1.2.8, lastPacketReceivedIdleMillis : 599661
+16:00:00.264 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,28] - 处理完成，共更新0条作废处方
+16:10:00.006 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,20] - 开始处理168小时内的作废处方
+16:10:00.006 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,23] - 时间范围：2025-09-18T16:10:00.006 至 2025-09-25T16:10:00.006
+16:10:00.008 [scheduling-1] WARN  c.a.d.p.DruidAbstractDataSource - [testConnectionInternal,1494] - discard long time none received connection. , jdbcUrl : jdbc:mysql://192.168.6.232/mes_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai, version : 1.2.8, lastPacketReceivedIdleMillis : 599744
+16:10:00.256 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,28] - 处理完成，共更新0条作废处方
+16:20:00.004 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,20] - 开始处理168小时内的作废处方
+16:20:00.004 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,23] - 时间范围：2025-09-18T16:20:00.004 至 2025-09-25T16:20:00.004
+16:20:00.008 [scheduling-1] WARN  c.a.d.p.DruidAbstractDataSource - [testConnectionInternal,1494] - discard long time none received connection. , jdbcUrl : jdbc:mysql://192.168.6.232/mes_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai, version : 1.2.8, lastPacketReceivedIdleMillis : 599752
+16:20:00.261 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,28] - 处理完成，共更新0条作废处方
+16:30:00.010 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,20] - 开始处理168小时内的作废处方
+16:30:00.010 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,23] - 时间范围：2025-09-18T16:30:00.010 至 2025-09-25T16:30:00.010
+16:30:00.013 [scheduling-1] WARN  c.a.d.p.DruidAbstractDataSource - [testConnectionInternal,1494] - discard long time none received connection. , jdbcUrl : jdbc:mysql://192.168.6.232/mes_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai, version : 1.2.8, lastPacketReceivedIdleMillis : 599752
+16:30:00.264 [scheduling-1] INFO  c.z.C.t.PrescriptionScheduledTask - [processInvalidPrescriptions,28] - 处理完成，共更新0条作废处方

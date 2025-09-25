@@ -66,7 +66,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
-    public int updateInvalidIn48Hours(String startTime, String endTime) {
-        return prescriptionMapper.updateInvalidIn48Hours(startTime,endTime);
+    public int updateInvalidIn168Hours(String startTime, String endTime) {
+        return prescriptionMapper.updateInvalidIn168Hours(startTime,endTime);
     }
 }

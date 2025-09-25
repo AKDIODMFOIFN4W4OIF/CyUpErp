@@ -15,16 +15,16 @@ public class PrescriptionScheduledTask {
     @Resource
     private PrescriptionService prescriptionService;
 
-    @Scheduled(cron = "0 0 */2 * * ?")
+    @Scheduled(cron = "0 */10 * * * ?")
     public void processInvalidPrescriptions() {
-        log.info("开始处理48小时内的作废处方");
+        log.info("开始处理168小时内的作废处方");
         LocalDateTime endTime = LocalDateTime.now();
-        LocalDateTime startTime = endTime.minusHours(48);
+        LocalDateTime startTime = endTime.minusHours(168);
         log.info("时间范围：{} 至 {}", startTime, endTime);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startTimeStr = startTime.format(formatter);
         String endTimeStr = endTime.format(formatter);
-        int updatedCount = prescriptionService.updateInvalidIn48Hours(startTimeStr, endTimeStr);
+        int updatedCount = prescriptionService.updateInvalidIn168Hours(startTimeStr, endTimeStr);
         log.info("处理完成，共更新{}条作废处方", updatedCount);
     }
 }

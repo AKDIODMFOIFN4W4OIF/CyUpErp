@@ -6,5 +6,5 @@ import java.util.Map;
 public interface PrescriptionService {
     Map<String, String> handleConsumptionResult(String result, String flowNo);
 
-    int updateInvalidIn48Hours(String startTime, String endTime);
+    int updateInvalidIn168Hours(String startTime, String endTime);
 }
