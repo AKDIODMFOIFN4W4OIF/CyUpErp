@@ -38,50 +38,109 @@
     </update>
 
     <select id="selectPrescriptionDetailByFlowNo" resultType="com.zlbc.CyUpErp.entity.PrescriptionDetailDTO">
-        SELECT
-            COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP') AS "DrugCode",
-            b.ClientDrugName AS "DrugName",
-            b.DrugUnit AS "DrugSpecification",
-            c.drugPlace AS "DrugPlace",
-            c.DrugFactory AS "DrugFactory",
-            a.PspNum * b.DrugDose AS "DrugConsumption",
-            DATE_FORMAT( b.CreatedOn, '%Y%m%d' ) AS "DrugConsumptionDate",
-            a.ClientCode AS "HospitalCode",
-            CONCAT(
-                    'CY',
-                    SUBSTRING( a.Pspcode, 3 )) AS "PspCode",
-            a.PspType AS "PspType",
-            d.PspDrugAmount AS "PspDrugAmount",
-            a.Patient AS "PatientName",
-            CASE
+        SELECT CASE
+                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
+                       AND pap.clientcode = a.ClientCode
+                       AND pap.name = b.ClientDrugName
+                       AND pap.id = dv.PID
+                       AND dv_drug.DrugCode IS NOT NULL THEN
+                       COALESCE(NULLIF(dv_drug.DrugCode, ''), 'WDYYP')
+                   ELSE
+                       COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP')
+                   END                               AS "DrugCode",
+               CASE
+                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
+                       AND pap.clientcode = a.ClientCode
+                       AND pap.name = b.ClientDrugName
+                       AND pap.id = dv.PID THEN
+                       dv.drugName
+                   ELSE
+                       b.ClientDrugName
+                   END                               AS "DrugName",
 
-                WHEN a.STATUS = 11 THEN
-                    1
-                WHEN a.STATUS = 1 THEN
-                    0
-                END AS "ConsumptionFlg"
-        FROM
-            psp_normal_prescription a
-                JOIN psp_agreement_prescription_drug b ON a.id = b.pid
-                LEFT JOIN mdm_drug_info c ON c.id = b.drugid -- 改为 LEFT JOIN，确保即使没有匹配的 c 记录也能返回 b 的数据
-                JOIN ( SELECT pid, COUNT(*) AS PspDrugAmount FROM psp_agreement_prescription_drug GROUP BY pid ) d ON d.pid = a.id
-        WHERE
-            a.flowNo = #{flowNo} AND a.UpErpStatus=0
-        GROUP BY
-            c.DrugCode,
-            b.ClientDrugName,
-            b.DrugUnit,
-            c.drugPlace,
-            c.DrugFactory,
-            a.PspNum,
-            b.DrugDose,
-            b.CreatedOn,
-            a.ClientCode,
-            a.pspcode,
-            a.PspType,
-            d.PspDrugAmount,
-            a.Patient,
-            a.STATUS;
+               b.DrugUnit                            AS "DrugSpecification",
+               CASE
+                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
+                       AND pap.clientcode = a.ClientCode
+                       AND pap.name = b.ClientDrugName
+                       AND pap.id = dv.PID
+                       AND dv_drug.DrugCode IS NOT NULL THEN
+                       dv_drug.drugPlace
+                   ELSE
+                       c.drugPlace
+                   END                               AS "DrugPlace",
+               CASE
+                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
+                       AND pap.clientcode = a.ClientCode
+                       AND pap.name = b.ClientDrugName
+                       AND pap.id = dv.PID
+                       AND dv_drug.DrugCode IS NOT NULL THEN
+                       dv_drug.DrugFactory
+                   ELSE
+                       c.DrugFactory
+                   END                               AS "DrugFactory",
+               CASE
+                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
+                       AND pap.clientcode = a.ClientCode
+                       AND pap.name = b.ClientDrugName
+                       AND pap.id = dv.PID THEN
+                       a.PspNum * dv.drugDose * b.DrugDose
+                   ELSE
+                       a.PspNum * b.DrugDose
+                   END                               AS "DrugConsumption",
+
+               DATE_FORMAT(b.CreatedOn, '%Y%m%d')    AS "DrugConsumptionDate",
+               a.ClientCode                          AS "HospitalCode",
+               CONCAT('CY', SUBSTRING(a.Pspcode, 3)) AS "PspCode",
+               a.PspType                             AS "PspType",
+               d.PspDrugAmount                       AS "PspDrugAmount",
+               a.Patient                             AS "PatientName",
+               CASE
+                   WHEN a.STATUS = 11 THEN 1
+                   WHEN a.STATUS = 1 THEN 0
+                   END                               AS "ConsumptionFlg"
+        FROM psp_normal_prescription a
+                 JOIN psp_agreement_prescription_drug b
+                      ON a.id = b.pid
+                 LEFT JOIN mdm_drug_info c
+                           ON c.id = b.drugid
+                 JOIN (SELECT pid, COUNT(*) AS PspDrugAmount
+                       FROM psp_agreement_prescription_drug
+                       GROUP BY pid) d
+                      ON d.pid = a.id
+                 LEFT JOIN psp_agreement_prescription pap
+                           ON a.ClientCode = pap.clientcode
+                               AND pap.name = b.ClientDrugName
+                 LEFT JOIN psp_drug_info_view dv
+                           ON pap.id = dv.PID
+                 LEFT JOIN mdm_drug_info dv_drug
+                           ON dv.drugId = dv_drug.id
+        WHERE a.flowNo = #{flowNo}
+          AND a.UpErpStatus = 0
+        GROUP BY c.DrugCode,
+                 c.drugPlace,
+                 c.DrugFactory,
+                 b.ClientDrugName,
+                 b.DrugUnit,
+                 a.PspNum,
+                 b.DrugDose,
+                 b.CreatedOn,
+                 a.ClientCode,
+                 a.pspcode,
+                 a.PspType,
+                 d.PspDrugAmount,
+                 a.Patient,
+                 a.STATUS,
+                 pap.id,
+                 pap.clientcode,
+                 pap.name,
+                 dv.PID,
+                 dv.drugId,
+                 dv.drugName,
+                 dv.drugDose,
+                 dv_drug.DrugCode,
+                 dv_drug.drugPlace,
+                 dv_drug.DrugFactory;
     </select>
 
     <select id="selectTop100PendingPrescriptionPspCodes" resultType="java.lang.String">
