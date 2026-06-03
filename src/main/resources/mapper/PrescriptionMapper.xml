@@ -39,115 +39,91 @@
 
     <select id="selectPrescriptionDetailByFlowNo" resultType="com.zlbc.CyUpErp.entity.PrescriptionDetailDTO">
         SELECT CASE
-                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
-                       AND pap.clientcode = a.ClientCode
-                       AND pap.name = b.ClientDrugName
-                       AND pap.id = dv.PID
-                       AND dv_drug.DrugCode IS NOT NULL THEN
-                       COALESCE(NULLIF(dv_drug.DrugCode, ''), 'WDYYP')
-                   ELSE
-                       COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP')
+                   WHEN pap_dv.match_pap_dv AND dv_drug.DrugCode IS NOT NULL
+                       THEN COALESCE(NULLIF(dv_drug.DrugCode, ''), 'WDYYP')
+                   ELSE COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP')
                    END                               AS "DrugCode",
                CASE
-                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
-                       AND pap.clientcode = a.ClientCode
-                       AND pap.name = b.ClientDrugName
-                       AND pap.id = dv.PID THEN
-                       dv.drugName
-                   ELSE
-                       b.ClientDrugName
+                   WHEN pap_dv.match_pap_dv THEN REPLACE(REPLACE(pap_dv.drugName, 'jc', '(集采)'), 'JC', '(集采)')
+                   ELSE REPLACE(REPLACE(b.ClientDrugName, 'jc', '(集采)'), 'JC', '(集采)')
                    END                               AS "DrugName",
-
                b.DrugUnit                            AS "DrugSpecification",
                CASE
-                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
-                       AND pap.clientcode = a.ClientCode
-                       AND pap.name = b.ClientDrugName
-                       AND pap.id = dv.PID
-                       AND dv_drug.DrugCode IS NOT NULL THEN
-                       dv_drug.drugPlace
-                   ELSE
-                       c.drugPlace
+                   WHEN pap_dv.match_pap_dv AND dv_drug.DrugCode IS NOT NULL THEN dv_drug.drugPlace
+                   ELSE c.drugPlace
                    END                               AS "DrugPlace",
                CASE
-                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
-                       AND pap.clientcode = a.ClientCode
-                       AND pap.name = b.ClientDrugName
-                       AND pap.id = dv.PID
-                       AND dv_drug.DrugCode IS NOT NULL THEN
-                       dv_drug.DrugFactory
-                   ELSE
-                       c.DrugFactory
+                   WHEN pap_dv.match_pap_dv AND dv_drug.DrugCode IS NOT NULL THEN dv_drug.DrugFactory
+                   ELSE c.DrugFactory
                    END                               AS "DrugFactory",
                CASE
-                   WHEN pap.id IS NOT NULL AND dv.PID IS NOT NULL
-                       AND pap.clientcode = a.ClientCode
-                       AND pap.name = b.ClientDrugName
-                       AND pap.id = dv.PID THEN
-                       a.PspNum * dv.drugDose * b.DrugDose
-                   ELSE
-                       a.PspNum * b.DrugDose
+                   WHEN pap_dv.match_pap_dv THEN a.PspNum * pap_dv.drugDose * b.DrugDose
+                   ELSE a.PspNum * b.DrugDose
                    END                               AS "DrugConsumption",
-
                DATE_FORMAT(b.CreatedOn, '%Y%m%d')    AS "DrugConsumptionDate",
                a.ClientCode                          AS "HospitalCode",
                CONCAT('CY', SUBSTRING(a.Pspcode, 3)) AS "PspCode",
                a.PspType                             AS "PspType",
                d.PspDrugAmount                       AS "PspDrugAmount",
                a.Patient                             AS "PatientName",
-               CASE
-                   WHEN a.STATUS = 11 THEN 1
-                   WHEN a.STATUS = 1 THEN 0
+               CASE a.STATUS
+                   WHEN 11 THEN 1
+                   WHEN 1 THEN 0
                    END                               AS "ConsumptionFlg"
-        FROM psp_normal_prescription a
-                 JOIN psp_agreement_prescription_drug b
-                      ON a.id = b.pid
+        FROM (SELECT id,
+                     ClientCode,
+                     PspNum,
+                     Pspcode,
+                     PspType,
+                     Patient,
+                     STATUS,
+                     flowNo
+              FROM psp_normal_prescription
+              WHERE flowNo = #{flowNo}
+                AND UpErpStatus = 0) a
+                 INNER JOIN psp_agreement_prescription_drug b
+                            ON a.id = b.pid
                  LEFT JOIN mdm_drug_info c
                            ON c.id = b.drugid
-                 JOIN (SELECT pid, COUNT(*) AS PspDrugAmount
-                       FROM psp_agreement_prescription_drug
-                       GROUP BY pid) d
-                      ON d.pid = a.id
-                 LEFT JOIN psp_agreement_prescription pap
-                           ON a.ClientCode = pap.clientcode
-                               AND pap.name = b.ClientDrugName
-                 LEFT JOIN psp_drug_info_view dv
-                           ON pap.id = dv.PID
+                 LEFT JOIN (SELECT pap.id,
+                                   pap.clientcode,
+                                   pap.NAME,
+                                   dv.PID,
+                                   dv.drugId,
+                                   dv.drugName,
+                                   dv.drugDose,
+                                   (pap.id IS NOT NULL AND dv.PID IS NOT NULL) AS match_pap_dv
+                            FROM psp_agreement_prescription pap
+                                     LEFT JOIN psp_drug_info_view dv
+                                               ON pap.id = dv.PID) pap_dv
+                           ON a.ClientCode = pap_dv.clientcode
+                               AND pap_dv.NAME = b.ClientDrugName
                  LEFT JOIN mdm_drug_info dv_drug
-                           ON dv.drugId = dv_drug.id
-        WHERE a.flowNo = #{flowNo}
-          AND a.UpErpStatus = 0
-        GROUP BY c.DrugCode,
-                 c.drugPlace,
-                 c.DrugFactory,
-                 b.ClientDrugName,
-                 b.DrugUnit,
-                 a.PspNum,
-                 b.DrugDose,
+                           ON pap_dv.drugId = dv_drug.id
+                 INNER JOIN (SELECT pid, COUNT(*) AS PspDrugAmount
+                             FROM psp_agreement_prescription_drug
+                             WHERE pid IN (SELECT id
+                                           FROM psp_normal_prescription
+                                           WHERE flowNo = #{flowNo}
+                                             AND UpErpStatus = 0)
+                             GROUP BY pid) d ON d.pid = a.id
+        WHERE b.ClientDrugName NOT LIKE '%儿童防感抗敏饮（院内颗粒）%'
+        GROUP BY a.id,
+                 b.id,
+                 c.id,
+                 pap_dv.id,
+                 dv_drug.id,
                  b.CreatedOn,
-                 a.ClientCode,
                  a.pspcode,
-                 a.PspType,
-                 d.PspDrugAmount,
                  a.Patient,
-                 a.STATUS,
-                 pap.id,
-                 pap.clientcode,
-                 pap.name,
-                 dv.PID,
-                 dv.drugId,
-                 dv.drugName,
-                 dv.drugDose,
-                 dv_drug.DrugCode,
-                 dv_drug.drugPlace,
-                 dv_drug.DrugFactory;
+                 a.STATUS;
     </select>
 
     <select id="selectTop100PendingPrescriptionPspCodes" resultType="java.lang.String">
         SELECT pspCode, clientCode
         FROM psp_normal_prescription
         WHERE UpErpStatus = 0
-          AND DATE (CreatedOn) >='2025-09-16'
+          AND DATE (CreatedOn) >='2026-05-16'
         ORDER BY CreatedOn ASC
             LIMIT 100
     </select>

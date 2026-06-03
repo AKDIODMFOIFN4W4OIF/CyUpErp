@@ -14,8 +14,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping({"/api"})
+@Slf4j
 public class ApiController {
     @Resource
     private PrescriptionPushService pushService;
@@ -25,6 +28,7 @@ public class ApiController {
     /*英克调用该接口获取处方明细*/
     @PostMapping("/mdc/mbs/cy/consumption/dataGet")
     public ResponseEntity<Map<String, Object>> getPendingPrescriptions() {
+        log.info("开始执行----------------");
         Map<String, Object> result = pushService.getPendingPrescriptions();
         if (result == null) {
             Map<String, Object> noData = new LinkedHashMap<>();
