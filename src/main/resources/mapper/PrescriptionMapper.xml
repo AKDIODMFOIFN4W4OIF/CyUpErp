@@ -68,6 +68,7 @@
                a.Patient                             AS "PatientName",
                CASE a.STATUS
                    WHEN 11 THEN 1
+                   WHEN 10 THEN 1
                    WHEN 1 THEN 0
                    END                               AS "ConsumptionFlg"
         FROM (SELECT id,
