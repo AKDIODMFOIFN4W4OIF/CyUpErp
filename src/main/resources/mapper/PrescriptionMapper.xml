@@ -44,8 +44,9 @@
                    ELSE COALESCE(NULLIF(c.DrugCode, ''), 'WDYYP')
                    END                               AS "DrugCode",
                CASE
-                   WHEN pap_dv.match_pap_dv THEN REPLACE(REPLACE(pap_dv.drugName, 'jc', '(集采)'), 'JC', '(集采)')
-                   ELSE REPLACE(REPLACE(b.ClientDrugName, 'jc', '(集采)'), 'JC', '(集采)')
+                   WHEN pap_dv.match_pap_dv AND dv_drug.DrugCode IS NOT NULL
+                       THEN REPLACE(REPLACE(COALESCE(NULLIF(dv_drug.DrugName, ''), b.ClientDrugName), 'jc', '(集采)'), 'JC', '(集采)')
+                   ELSE REPLACE(REPLACE(COALESCE(NULLIF(c.DrugName, ''), b.ClientDrugName), 'jc', '(集采)'), 'JC', '(集采)')
                    END                               AS "DrugName",
                b.DrugUnit                            AS "DrugSpecification",
                CASE
@@ -91,7 +92,6 @@
                                    pap.NAME,
                                    dv.PID,
                                    dv.drugId,
-                                   dv.drugName,
                                    dv.drugDose,
                                    (pap.id IS NOT NULL AND dv.PID IS NOT NULL) AS match_pap_dv
                             FROM psp_agreement_prescription pap
